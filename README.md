@@ -314,8 +314,8 @@ build/SampleApp iPhone.log
 ```
 
 #Goals of contributing
-[ ] - make queue and test resources to prevert  'fork: Resource temporarily unavailable' ( too many simulators ) 
-[ ] - add detection to real devices 
-[ ] - fix condition for simulator satus (booted, idle)
-[ ] - launcher that depends on  quqeue to test on both - real devices and simulators
-[ ] - support for tests "Shredding" 
+- [ ] - make queue and test resources to prevert  'fork: Resource temporarily unavailable' ( too many simulators ) 
+- [ ] - add detection to real devices 
+- [ ] - fix condition for simulator satus (booted, idle)
+- [ ] - launcher that depends on  quqeue to test on both - real devices and simulators
+- [ ] - support for tests "Shredding" 
