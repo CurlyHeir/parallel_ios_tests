@@ -2,6 +2,7 @@ require 'rubygems'
 require 'bundler'
 Bundler.require(:default)
 require 'benchmark'
+require 'waitutil'
 
 $stdout.sync = true
 $stderr.sync = true
@@ -100,4 +101,65 @@ task :launch do
     device.install!(File.join(build_path, 'Build/Products/Debug-iphonesimulator/SampleApp.app'))
     device.launch_app!('com.plunien.SampleApp')
   end
+end
+
+
+desc 'test of running tests in multiple simulators'
+task :t, [:specific_test] do |t, args|
+  exit_code = 0
+
+  args.with_defaults(:specific_test => :all)
+  if args[:specific_test] != :all
+    test_scope = args.extras.inject("-only #{args[:specific_test]}") do |tests, test|
+      tests + ',' + test
+    end
+  else
+    test_scope = nil
+  end
+  xctool = nil
+  time = Benchmark.measure do
+    xctool = File.join(Dir.pwd, 'xctool', 'xctool.sh')
+    xctool = "#{xctool} -derivedDataPath '#{File.join(Dir.pwd, 'build')}' -scheme SampleApp -sdk iphonesimulator -workspace SampleApp.xcworkspace"
+    sh "#{xctool} build-tests"
+    
+  end 
+  puts "Build time: #{time.real}s"
+    
+
+  time = Benchmark.measure do
+    devices = [
+      SimCtl.create_device('SampleApp 1', SimCtl.devicetype(name: 'iPhone 5'), SimCtl::Runtime.latest(:ios)),
+      SimCtl.create_device('SampleApp 2', SimCtl.devicetype(name: 'iPad Retina'), SimCtl::Runtime.latest(:ios)),
+      SimCtl.create_device('SampleApp 3', SimCtl.devicetype(name: 'iPhone 6'), SimCtl::Runtime.latest(:ios)),
+      SimCtl.create_device('SampleApp 4', SimCtl.devicetype(name: 'iPhone 6s'), SimCtl::Runtime.latest(:ios))
+    ]
+  
+    threads = []
+  
+    devices.each do |device| 
+      threads << Thread.new do 
+        device.wait! {|d| d.state == :shutdown}
+        device.launch! 0.25
+        device.wait!{|d| d.state == :booted}
+        device.launch_app!('com.apple.mobilesafari')
+        until (system "#{xctool} run-tests -destination 'id=#{device.udid}'")
+          sleep(1)
+        end
+        device.kill!
+        device.wait! {|d| d.state == :shutdown}
+        device.delete!
+      end
+    end 
+  
+    # Wait for all threads to finish
+    threads.each do |thread|
+      thread.join
+      exit_code |= thread[:result].to_i
+    end
+
+  end
+
+  puts "Total time: #{time.real}s"
+
+  exit exit_code
 end
