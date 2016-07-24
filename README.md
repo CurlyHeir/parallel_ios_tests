@@ -312,3 +312,10 @@ build/SampleApp iPhone.log
 
 ** RUN-TESTS SUCCEEDED: 2 passed, 0 failed, 0 errored, 2 total ** (75426 ms)
 ```
+
+#Goals of contributing
+[ ] - make queue and test resources to prevert  'fork: Resource temporarily unavailable' ( too many simulators ) 
+[ ] - add detection to real devices 
+[ ] - fix condition for simulator satus (booted, idle)
+[ ] - launcher that depends on  quqeue to test on both - real devices and simulators
+[ ] - support for tests "Shredding" 
