@@ -24,6 +24,15 @@ Instead we can use [xctool's](https://github.com/facebook/xctool) feature of sep
 details of `xctool` it's mandatory to pass the `-derivedDataPath` option to both phases. It also
 needs to be an absolute path! Right now it's also required to use the current `master` of `xctool`.
 
+#TO-DO:
+- [ ] - make queue and test resources to prevert  'fork: Resource temporarily unavailable' ( too many simulators ) 
+- [ ] - add detection to real devices 
+- [ ] - fix condition for simulator satus (booted, idle)
+- [ ] - launcher that depends on  quqeue to test on both - real devices and simulators
+- [ ] - support for tests "Shredding" 
+- [ ] - get rid of xctool if there will be that possibility 
+- [ ] - build plugin for Fastlane (more info: https://github.com/fastlane/fastlane/blob/master/fastlane/docs/Plugins.md)
+
 ## Start simple
 
 The example app includes two test cases that are using [KIF](https://github.com/kif-framework/KIF) for testing the UI.
@@ -312,10 +321,3 @@ build/SampleApp iPhone.log
 
 ** RUN-TESTS SUCCEEDED: 2 passed, 0 failed, 0 errored, 2 total ** (75426 ms)
 ```
-
-#Goals of contributing
-- [ ] - make queue and test resources to prevert  'fork: Resource temporarily unavailable' ( too many simulators ) 
-- [ ] - add detection to real devices 
-- [ ] - fix condition for simulator satus (booted, idle)
-- [ ] - launcher that depends on  quqeue to test on both - real devices and simulators
-- [ ] - support for tests "Shredding" 
